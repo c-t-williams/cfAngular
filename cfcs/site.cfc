@@ -13,9 +13,7 @@
 				<cfcatch type="any"><cfdump var="#cfcatch#"></cfcatch>
 			</cftry>
 		</cfif>
-		
-		<cfdump var="#cfhttp.filecontent#">
-		
+
 		<cfreturn arrReturn>
 	</cffunction>
 	
@@ -86,23 +84,26 @@
 		<cfreturn strReturn>
 	</cffunction>
 	
-	<cffunction name="buildSitemapXML" returntype="void">
-		<cfset var arrSitemap = This.getSitemap("/")>
-		<cfset var strFilename = ExpandPath("/sitemap.xml")>
-		<cfset var xmlReturn = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'>
+	<cffunction name="buildSitemapXML" returntype="string">
+		<cfargument name="arrSitemap" type="array" required="true">
+		<cfargument name="bolFirst" type="boolean" required="false" default="false">
+		
+		<cfset var xmlReturn = ''>
+		
+		<cfif bolFirst><cfset xmlReturn = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'></cfif>
 		
 		<cfloop from="1" to="#ArrayLen(arrSitemap)#" index="intIndex">
 			<cfset xmlReturn &= '	<url>'>	
 			<cfset xmlReturn &= '		<loc>#Application.SiteURL#/##!#arrSitemap[intIndex].PATH#</loc>'>
 			<cfset xmlReturn &= '	</url>'>
+			
+			<cfif ArrayLen(arrSitemap[intIndex].CHILDREN)>
+				<cfset xmlReturn &= this.buildSitemapXML(arrSitemap[intIndex].CHILDREN, false)>
+			</cfif>
 		</cfloop>
 		
-		<cfset xmlReturn &= '</urlset>'>
+		<cfif bolFirst><cfset xmlReturn &= '</urlset>'></cfif>
 
-		<cfif FileExists(strFilename)>
-			<cfset FileDelete(strFilename)>
-		</cfif>
-
-		<cffile action="write" file="#strFilename#" output="#xmlReturn#">
+		<cfreturn xmlReturn>
 	</cffunction>
 </cfcomponent>

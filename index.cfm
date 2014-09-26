@@ -7,19 +7,17 @@
 		<cfset seo_replacement = true />
 		
 		<!--- Get Navigation Information Once --->
-		<cfset seo_sitemap = getSitemap(url._escaped_fragment_)>
+		<cfset seo_sitemap = Application.SiteCFC.getSitemap(url._escaped_fragment_)>
 		
 		<!--- Get Navigation --->
-		<cfset seo_navigation = getNavigation(url._escaped_fragment_, seo_sitemap)>
+		<cfset seo_navigation = Application.SiteCFC.getNavigation(url._escaped_fragment_, seo_sitemap)>
 		
 		<!--- Generate Breadcrumb String --->
-		<cfset seo_breadcrumb = getBreadcrumb(url._escaped_fragment_, seo_sitemap)>
+		<cfset seo_breadcrumb = Application.SiteCFC.getBreadcrumb(url._escaped_fragment_, seo_sitemap)>
 		
 		<!--- Get Current Page Content --->
-		<cfset seo_content = getContent(url._escaped_fragment_,seo_breadcrumb)>
+		<cfset seo_content = Application.SiteCFC.getContent(url._escaped_fragment_,seo_breadcrumb)>
 	</cfif>
-	
-	<cfset Application.SiteCFC.buildSitemapXML() />
 </cfsilent><!doctype html>
 <html <cfif not seo_replacement>class="no-js" ng-app="angularCFApp"</cfif>>
     <head>
